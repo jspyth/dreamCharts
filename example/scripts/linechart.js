@@ -9,10 +9,10 @@ var wStart = svg_width*0.1,wEnd = svg_width*0.7,hStart = svg_height*0.2,hEnd = s
 
 //给数据
 var data = [176,58,112,61,38,50,200,139,66,100,333,234];
-//var data2 = [76,158,34,88,123,344,45,912,90,100,112,200];
+var data2 = [76,158,34,88,123,344,45,912,90,100,112,200];
 var catogary = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 
-//dreamCharts.calPublicMax([data,data2]);//如果多列数据就使用这个方法
+dreamCharts.calPublicMax([data,data2]);//如果多列数据就使用这个方法
 
 var yAxis = dreamCharts.yAxis
     .settings(
@@ -21,7 +21,8 @@ var yAxis = dreamCharts.yAxis
         distanceY:25,
         direction:-15,
         xOffsetText:-45,
-        yOffsetText:7
+        yOffsetText:7,
+        getPublicMax:true
     }
 );
 
@@ -78,7 +79,8 @@ xAxis.drawXText(wStart,hEnd,wEnd,"xText")
 /*画折线*/
 var polyline1 = dreamCharts.polyLine.settings({
     data:data,
-    allOffset:0
+    allOffset:0,
+    getPublicMax:true
 });
 
 polyline1.drawPolyLine(wStart,wEnd,hStart,hEnd,"line1")
@@ -88,6 +90,18 @@ polyline1.drawPolyLine(wStart,wEnd,hStart,hEnd,"line1")
         fill:"none"
 });
 
+var polyline2 = dreamCharts.polyLine.settings({
+    data:data2,
+    allOffset:0,
+    getPublicMax:true
+});
+
+polyline2.drawPolyLine(wStart,wEnd,hStart,hEnd,"line2")
+    .attr({
+        strokeWidth:"2px",
+        stroke:"yellow",
+        fill:"none"
+    });
 var lengend1 = dreamCharts.legend.settings({
     width:55,
     height:25
@@ -102,29 +116,22 @@ lengend1.drawLegendText(wStart+70,hStart-29,"第一年")
     fill:"rgb(233,98,9)",
     strokeWidth:"1px"
 });
-/*var polyline2 = dreamCharts.polyLine.settings({
-    data:data,
-    allOffset:0
+
+var lengend2 = dreamCharts.legend.settings({
+    width:55,
+    height:25
 });
-polyline2.drawPolyLine(wStart,wEnd,hStart,hEnd,"line2")
+lengend2.drawLegendRect(wStart+130,hStart-50)
     .attr({
-        strokeWidth:"2px",
-        stroke:"yellow",
-        fill:"none"
-    });*/
-
-/*var his = dreamCharts.histogram
-    .settings({
-        data:data,
-        multiple:0.7
+        fill:"yellow"
     });
 
-his.drawBar(wStart,wEnd,hStart,hEnd,"bar1")
-.attr({
-        stroke:"white",
-        strokeWidth:"1px",
-        fill:"blue"
+lengend2.drawLegendText(wStart+190,hStart-29,"第二年")
+    .attr({
+        fill:"rgb(233,98,9)",
+        strokeWidth:"1px"
     });
+
 
 var a = svg.selectAll(".bar1");
 dreamCharts.addEventListener(a,"mousemove",function(){
@@ -132,5 +139,5 @@ dreamCharts.addEventListener(a,"mousemove",function(){
                 {fill:"#ee0000"},
                 500,mina.easein
             );
-    });*/
+    });
 
