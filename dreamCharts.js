@@ -134,6 +134,7 @@ var yAxis = {
         this.direction = obj.direction;
         this.xOffsetText = obj.xOffsetText;
         this.yOffsetText = obj.yOffsetText;
+        this.getPublicMax = obj.getPublicMax;
         return dreamCharts.yAxis;
     },
     /****************画y轴长垂线************/
@@ -225,6 +226,7 @@ var histogram = {
         this.data = obj.data;
         this.dataLength = obj.data.length;
         this.multiple = obj.multiple;
+        this.getPublicMax = obj.getPublicMax;
         return dreamCharts.histogram;
     },
     /****************画直方图矩形************/
@@ -248,13 +250,6 @@ var histogram = {
         }
         return dreamCharts.SVG.selectAll("."+className);
     }//num是一个系倍数，用来调节直方图方块的宽度
-    /*addEventListener:function(arr,event,func){
-        //console.log(arr);
-        dreamCharts.addEvent(arr,event,func);
-    },
-    removeEventListener:function(arr,event,func){
-        dreamCharts.removeEvent(arr,event,func);
-    }*/
 };
 
 /****************折线图****************/
@@ -266,6 +261,7 @@ var polyLine = {
         this.data = obj.data;
         this.dataLength = obj.data.length;
         this.allOffset = obj.allOffset;
+        this.getPublicMax = obj.getPublicMax;
         return dreamCharts.polyLine;
     },
     /****************画折线************/
