@@ -126,7 +126,7 @@ var yAxis = {
     xOffsetText:0,
     yOffsetText:0,
     data:[],
-    getPublicMax:false,
+    getPublicMax:new Boolean(false),
     settings:function(obj){
         this.data = obj.data;
         this.dataLength = obj.data.length;
@@ -162,6 +162,7 @@ var yAxis = {
         else{
             dataMax = dreamCharts.maxData;
         }
+
         /******************画刻度文本********************/
         for(let i = 0;i < this.dataLength+1; i++){
             dreamCharts.SVG.paper.text(wStart+this.xOffsetText,hEnd-(interval)*i+this.yOffsetText,(i*Math.ceil((dataMax/this.dataLength))).toString())
@@ -171,7 +172,7 @@ var yAxis = {
     }//wStart,hStart,wEnd,heightEnd是直方图的起始宽高和终点宽高，Attr是给线段赋属性，distance是第一根刻度线距离y轴长垂线顶端的距离，dataLength是数据的个数，xOffsetText是决定文本沿水平方向左右移动，yOffsetText是决定文本沿垂直方向上下移动，dataMax是取出数据中最大的数据值
 };
 
-/****************y轴****************/
+/****************x轴****************/
 var xAixs = {
     distanceX:0,
     dataLength:0,
@@ -221,7 +222,7 @@ var histogram = {
     dataLength:0,
     data:[],
     multiple:0.5,
-    getPublicMax:false,
+    getPublicMax:new Boolean(false),
     settings:function(obj){
         this.data = obj.data;
         this.dataLength = obj.data.length;
@@ -256,7 +257,8 @@ var histogram = {
 var polyLine = {
     dataLength:0,
     data:[],
-    getPublicMax:false,
+    allOffset:0,
+    getPublicMax:new Boolean(false),
     settings:function(obj){
         this.data = obj.data;
         this.dataLength = obj.data.length;
