@@ -5,7 +5,7 @@
 var svg = dreamCharts.getSVG("#svg");
 //定义需要的全局变量
 var svg_width = svg.attr("width"),svg_height = svg.attr("height");
-var wStart = svg_width*0.1,wEnd = svg_width*0.7,hStart = svg_height*0.2,hEnd = svg_height*0.9;//依次是直方图范围左上角顶点x坐标,直方图范围右下角顶点x坐标,直方图范围左上角顶点y坐标,直方图范围右下角顶点y坐标
+var wStart = svg_width*0.25,wEnd = svg_width*0.85,hStart = svg_height*0.2,hEnd = svg_height*0.9;//依次是直方图范围左上角顶点x坐标,直方图范围右下角顶点x坐标,直方图范围左上角顶点y坐标,直方图范围右下角顶点y坐标
 
 //给数据
 var data = [176,58,112,61,38,50,200,139,66,100,333,234];
@@ -51,11 +51,11 @@ var xAxis = dreamCharts.xAxis
         distanceX:85,
         xOffsetText:-15,
         yOffsetText:30,
-        direction:-(hEnd-hStart),
-        allOffset:0
+        direction:15,
+        allOffset:1
 });
 //x轴水平长线
-xAxis.drawXLine(wStart,wEnd-30,hEnd)
+xAxis.drawXLine(wStart,wEnd-80,hEnd)
     .attr({
         stroke:"rgb(233,98,9)",
         strokeWidth:"1px"
@@ -64,9 +64,9 @@ xAxis.drawXLine(wStart,wEnd-30,hEnd)
 //x轴刻度线
 xAxis.drawXGraduationLine(wStart,wEnd,hEnd,"xGraduationLine")
     .attr({
-        stroke:"white",
+        stroke:"rgb(233,98,9)",
         strokeWidth:"1px",
-        opacity:0.35
+        opacity:1
 });
 
 //x轴文本值
@@ -75,11 +75,25 @@ xAxis.drawXText(wStart,hEnd,wEnd,"xText")
         fill:"rgb(233,98,9)",
         strokeWidth:"1px"
 });
+/*******************直方图矩形方块******************/
+var histogram1 = dreamCharts.histogram
+    .settings({
+        data:data2,
+        multiple:0.7
+    });
+
+histogram1.drawBar(wStart,wEnd,hStart,hEnd,"bar1")
+    .attr({
+        stroke:"white",
+        strokeWidth:"3px",
+        fill:"#000000"
+    });
+
 
 /*画折线*/
 var polyline1 = dreamCharts.polyLine.settings({
     data:data,
-    allOffset:0,
+    allOffset:1,
     getPublicMax:true
 });
 
@@ -92,7 +106,7 @@ polyline1.drawPolyLine(wStart,wEnd,hStart,hEnd,"line1")
 
 var polyline2 = dreamCharts.polyLine.settings({
     data:data2,
-    allOffset:0,
+    allOffset:1,
     getPublicMax:true
 });
 
@@ -125,7 +139,6 @@ lengend2.drawLegendRect(wStart+130,hStart-50)
     .attr({
         fill:"yellow"
     });
-
 lengend2.drawLegendText(wStart+190,hStart-29,"第二年")
     .attr({
         fill:"rgb(233,98,9)",
@@ -133,11 +146,4 @@ lengend2.drawLegendText(wStart+190,hStart-29,"第二年")
     });
 
 
-var a = svg.selectAll(".bar1");
-dreamCharts.addEventListener(a,"mousemove",function(){
-            this.animate(
-                {fill:"#ee0000"},
-                500,mina.easein
-            );
-    });
 

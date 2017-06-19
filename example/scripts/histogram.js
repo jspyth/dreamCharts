@@ -16,9 +16,10 @@ var yAxis = dreamCharts.yAxis
     {
         data:data,
         distanceY:25,
-        direction:wEnd-wStart,
+        direction:-15,
         xOffsetText:-45,
-        yOffsetText:7
+        yOffsetText:7,
+        getPublicMax:false
     }
 );
 
@@ -29,9 +30,8 @@ yAxis.drawYLine(wStart,hStart,hEnd)
     });
 yAxis.drawYGraduationLine(wStart,hStart,hEnd,"yGraduationLine")
     .attr({
-        stroke: "white",
-        strokeWidth: "1px",
-        opacity:0.5
+        stroke: "rgb(233,98,9)",
+        strokeWidth: "1px"
     });
 yAxis.drawYText(wStart,hStart,hEnd,"yText")
     .attr(
@@ -52,7 +52,7 @@ var xAxis = dreamCharts.xAxis
         allOffset:1
     });
 //x轴水平长线
-xAxis.drawXLine(wStart,wEnd,hEnd)
+xAxis.drawXLine(wStart,wEnd-80,hEnd)
     .attr({
         stroke:"rgb(233,98,9)",
         strokeWidth:"1px"
@@ -63,7 +63,7 @@ xAxis.drawXGraduationLine(wStart,wEnd,hEnd,"xGraduationLine")
     .attr({
         stroke:"rgb(233,98,9)",
         strokeWidth:"1px",
-        opacity:0.35
+        opacity:1
     });
 
 //x轴文本值
@@ -76,15 +76,17 @@ xAxis.drawXText(wStart,hEnd,wEnd,"xText")
 var histogram1 = dreamCharts.histogram
     .settings({
         data:data,
-        multiple:0.7
+        multiple:0.7,
+        getPublicMax:false
     });
 
 histogram1.drawBar(wStart,wEnd,hStart,hEnd,"bar1")
     .attr({
         stroke:"white",
-        strokeWidth:"1px",
-        fill:"blue"
+        strokeWidth:"3px",
+        fill:"#0000ff"
     });
+
 
 
 
