@@ -9,7 +9,7 @@ var dreamCharts = {
         var maxDataArr = [];
         for(let i = 0;i < arr.length;i++){
             maxDataArr.push(Math.max.apply(Math,arr[i]));
-        }
+    }
         this.maxData = Math.max.apply(Math,maxDataArr);
     },
     getSVG:function(id){
@@ -97,6 +97,16 @@ var dreamCharts = {
             else{
                 return 0;
             }
+        }
+    },
+    catogaryColor5:function(index){
+        var color = ["yellow","white","blue","green","silver"];
+        var len = color.length;
+        if(index < len){
+            return color[index];
+        }
+        else{
+            return color[index-len]
         }
     }
 };
@@ -243,13 +253,106 @@ var histogram = {
         var x = 0;
         var y = 0;
         var a = (hEnd-hStart-dreamCharts.yAxis.distanceY)/this.dataLength;//y轴每段刻度之间的y坐标间隔
-        for(let i = 0;i < this.dataLength+1;i++){
+        for(let i = 0;i < this.dataLength;i++){
             x = wStart+i*interval+this.multiple*interval;
             y = hEnd-Math.floor(this.data[i]/Math.ceil(dataMax/this.dataLength))*a-(this.data[i]%Math.ceil(dataMax/this.dataLength))/Math.ceil(dataMax/this.dataLength)*a;
             dreamCharts.SVG.paper.rect(x,y,interval*(1-this.multiple)*2,hEnd-y)
                 .addClass(className);
         }
         return dreamCharts.SVG.selectAll("."+className);
+    }//num是一个系倍数，用来调节直方图方块的宽度
+};
+
+/****************堆叠图****************/
+var stack = {
+    dataLength:0,
+    data:[],
+    multiple:0.5,
+    getPublicMax:new Boolean(false),
+    settings:function(obj){
+        this.data = obj.data;
+        this.dataLength = obj.data[0].length;
+        this.multiple = obj.multiple;
+        this.getPublicMax = obj.getPublicMax;
+        return dreamCharts.stack;
+    },
+    /****************画堆叠图************/
+    drawStack:function(wStart,wEnd,hStart,hEnd,className){
+        var interval = (wEnd-wStart-dreamCharts.xAxis.distanceX)/this.dataLength;//x轴刻度间的间隔
+        var dataMax = 0;
+        if(this.getPublicMax == false){
+            dataMax = dreamCharts.maxData;
+        }
+        else {
+            dataMax = dreamCharts.maxData;
+        }
+        var x = 0;
+        var y = 0;
+        var a = (hEnd-hStart-dreamCharts.yAxis.distanceY)/this.dataLength;//y轴每段刻度之间的y坐标间隔
+        var arr = [];//保存堆叠图每一个柱子的起始点y坐标
+        var color = "";
+        for(let j = 0;j < this.data.length;j++){
+            color = dreamCharts.catogaryColor5(j);
+            if(j == 0){
+                for (let i = 0; i < this.dataLength; i++) {
+                    x = wStart + i * interval + this.multiple * interval;
+                    y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
+                    dreamCharts.SVG.paper.rect(x, y, interval * (1 - this.multiple) * 2, hEnd - y)
+                        .addClass(className+`${j+1}`).attr({
+                            fill:color
+                        });
+                    arr.push(y);
+                }
+            }
+            else{
+                color = dreamCharts.catogaryColor5(j);
+                for (let i = 0; i < this.dataLength; i++) {
+                    x = wStart + i * interval + this.multiple * interval;
+                    y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
+
+                    dreamCharts.SVG.paper.rect(x, y-(hEnd-arr[i]), interval * (1 - this.multiple) * 2, hEnd - y)
+                        .addClass(className+`${j+1}`).attr({
+                            fill:color
+                        });
+                    arr[i] = y-(hEnd-arr[i]);
+                }
+            }
+        }
+        /*for(let j = 0;j < this.data.length;j++) {
+            if(j == 0){
+                for (let i = 0; i < this.dataLength; i++) {
+                    x = wStart + i * interval + this.multiple * interval;
+                    y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
+                    dreamCharts.SVG.paper.rect(x, y, interval * (1 - this.multiple) * 2, hEnd - y)
+                        .addClass(className+"1").attr({
+                            fill:"yellow"
+                        });
+                    arr.push(y);
+                }
+            }
+            if(j == 1){
+                for (let i = 0; i < this.dataLength; i++) {
+                    x = wStart + i * interval + this.multiple * interval;
+                    y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
+                    dreamCharts.SVG.paper.rect(x, y-hEnd + arr[i], interval * (1 - this.multiple) * 2, hEnd - y)
+                        .addClass(className+"2").attr({
+                            fill:"#f2f0f0"
+                        });
+                    arr2.push(2*hEnd-y-arr[i]);
+                }
+            }
+            if(j == 2){
+                for (let i = 0; i < this.dataLength; i++) {
+                    x = wStart + i * interval + this.multiple * interval;
+                    y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
+                    dreamCharts.SVG.paper.rect(x, y-arr2[i], interval * (1 - this.multiple) * 2, hEnd - y)
+                        .addClass(className+"3").attr({
+                            fill:"blue"
+                        });
+                }
+            }
+        }*/
+        //return dreamCharts.SVG.selectAll("."+className);
     }//num是一个系倍数，用来调节直方图方块的宽度
 };
 
@@ -297,5 +400,6 @@ var polyLine = {
 dreamCharts.yAxis = yAxis;
 dreamCharts.xAxis = xAixs;
 dreamCharts.histogram = histogram;
+dreamCharts.stack = stack;
 dreamCharts.polyLine = polyLine;
 dreamCharts.legend = legend;
