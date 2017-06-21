@@ -298,7 +298,7 @@ var stack = {
                     x = wStart + i * interval + this.multiple * interval;
                     y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
                     dreamCharts.SVG.paper.rect(x, y, interval * (1 - this.multiple) * 2, hEnd - y)
-                        .addClass(className+`${j+1}`).attr({
+                        .addClass(className+" "+className+`${j+1}`).attr({
                             fill:color
                         });
                     arr.push(y);
@@ -311,7 +311,7 @@ var stack = {
                     y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
 
                     dreamCharts.SVG.paper.rect(x, y-(hEnd-arr[i]), interval * (1 - this.multiple) * 2, hEnd - y)
-                        .addClass(className+`${j+1}`).attr({
+                        .addClass(className+" "+className+`${j+1}`).attr({
                             fill:color
                         });
                     arr[i] = y-(hEnd-arr[i]);
