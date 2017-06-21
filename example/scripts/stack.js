@@ -5,13 +5,10 @@ var wStart = svg_width*0.25,wEnd = svg_width*0.85,hStart = svg_height*0.2,hEnd =
 
 //给数据
 var catogary = [2005,2006,2007,2008,2009,2010];
-var data1 = [3000,1300,3700,4900,700,700];
-var data2 = [2000,4000,1810,6540,2820,1000];
-var data3 = [1100,1700,1680,4000,4900,700];
-var List = [data1,data2,data3];
+var List = [[3000,1300,3700,4900,700,700],[2000,4000,1810,6540,2820,1000],[1100,1700,1680,4000,4900,700]];
 var maxList = [];
-for(let i = 0;i < data1.length;i++){
-    maxList.push(data1[i]+data2[i]+data3[i]);
+for(let j = 0;j < List[0].length;j++){
+    maxList.push(List[0][j]+List[1][j]+List[2][j]);
 }
 
 dreamCharts.calPublicMax([maxList]);//如果多列数据就使用这个方法
@@ -87,6 +84,10 @@ var stack = dreamCharts.stack.settings({
 
 stack.drawStack(wStart,wEnd,hStart,hEnd,"stack");
 
-/*svg.selectAll(".stack3").attr({
-   fill:"black"
-});*/
+
+var allStack = svg.selectAll(".stack");
+dreamCharts.addEventListener(allStack,"click",function(){
+    this.attr({
+        fill:"red"
+    })
+});
