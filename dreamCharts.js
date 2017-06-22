@@ -318,41 +318,6 @@ var stack = {
                 }
             }
         }
-        /*for(let j = 0;j < this.data.length;j++) {
-            if(j == 0){
-                for (let i = 0; i < this.dataLength; i++) {
-                    x = wStart + i * interval + this.multiple * interval;
-                    y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
-                    dreamCharts.SVG.paper.rect(x, y, interval * (1 - this.multiple) * 2, hEnd - y)
-                        .addClass(className+"1").attr({
-                            fill:"yellow"
-                        });
-                    arr.push(y);
-                }
-            }
-            if(j == 1){
-                for (let i = 0; i < this.dataLength; i++) {
-                    x = wStart + i * interval + this.multiple * interval;
-                    y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
-                    dreamCharts.SVG.paper.rect(x, y-hEnd + arr[i], interval * (1 - this.multiple) * 2, hEnd - y)
-                        .addClass(className+"2").attr({
-                            fill:"#f2f0f0"
-                        });
-                    arr2.push(2*hEnd-y-arr[i]);
-                }
-            }
-            if(j == 2){
-                for (let i = 0; i < this.dataLength; i++) {
-                    x = wStart + i * interval + this.multiple * interval;
-                    y = hEnd - Math.floor(this.data[j][i] / Math.ceil(dataMax / this.dataLength)) * a - (this.data[j][i] % Math.ceil(dataMax / this.dataLength)) / Math.ceil(dataMax / this.dataLength) * a;
-                    dreamCharts.SVG.paper.rect(x, y-arr2[i], interval * (1 - this.multiple) * 2, hEnd - y)
-                        .addClass(className+"3").attr({
-                            fill:"blue"
-                        });
-                }
-            }
-        }*/
-        //return dreamCharts.SVG.selectAll("."+className);
     }//num是一个系倍数，用来调节直方图方块的宽度
 };
 
@@ -391,6 +356,36 @@ var polyLine = {
             }
             else{
                 d = d+"L"+x+" "+y+" ";
+            }
+        }
+        return dreamCharts.SVG.paper.path(d)
+            .addClass(className);
+    },
+    drawDiagram:function(wStart,wEnd,hStart,hEnd,className){
+        var dataMax = 0;
+        if(this.getPublicMax == false){
+            dataMax = Math.max.apply(Math,this.data);
+        }
+        else{
+            dataMax = dreamCharts.maxData;
+        }
+        var interval = (wEnd-wStart-dreamCharts.xAxis.distanceX)/this.dataLength;//x轴刻度间的间隔
+        var point = [];
+        var d = "";
+        var x = 0;
+        var y = 0;
+        var a = (hEnd-hStart-dreamCharts.yAxis.distanceY)/this.dataLength;//y轴每段刻度之间的y坐标间隔
+        for(let i = 0;i < this.dataLength+1;i++){
+            x = wStart+(i+this.allOffset)*interval;
+            y = hEnd-Math.floor(this.data[i]/Math.ceil(dataMax/this.dataLength))*a-(this.data[i]%Math.ceil(dataMax/this.dataLength))/Math.ceil(dataMax/this.dataLength)*a;
+            if(i == 0){
+                d = "M"+x+" "+y+" C";
+                point.push(x,y);
+            }
+            else{
+                d = d+(point[0]+0.5*interval)+" "+point[1]+" "+(point[0]+0.5*interval)+" "+y+" "+x+" "+y+" ";
+                point.splice(0,point.length);
+                point.push(x,y);
             }
         }
         return dreamCharts.SVG.paper.path(d)
