@@ -18,6 +18,7 @@ var yAxis = dreamCharts.yAxis
     .settings(
     {
         data:data,
+        ticks:6,
         distanceY:25,
         direction:-15,
         xOffsetText:-45,

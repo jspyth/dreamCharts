@@ -17,6 +17,7 @@ var yAxis = dreamCharts.yAxis
     .settings(
     {
         data:maxList,
+        ticks:6,
         distanceY:25,
         direction:wEnd-wStart,
         xOffsetText:-65,

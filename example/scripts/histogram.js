@@ -15,8 +15,9 @@ var yAxis = dreamCharts.yAxis
     .settings(
     {
         data:data,
+        ticks:6,
         distanceY:25,
-        direction:-15,
+        direction:wEnd-wStart,
         xOffsetText:-45,
         yOffsetText:7,
         getPublicMax:false
@@ -30,8 +31,9 @@ yAxis.drawYLine(wStart,hStart,hEnd)
     });
 yAxis.drawYGraduationLine(wStart,hStart,hEnd,"yGraduationLine")
     .attr({
-        stroke: "rgb(233,98,9)",
-        strokeWidth: "1px"
+        stroke: "white",
+        strokeWidth: "1px",
+        opacity:0.5
     });
 yAxis.drawYText(wStart,hStart,hEnd,"yText")
     .attr(
