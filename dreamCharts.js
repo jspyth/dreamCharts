@@ -131,7 +131,7 @@ var legend = {
 /****************y轴****************/
 var yAxis = {
     distanceY:0,
-    dataLength:0,
+    ticks:0,
     direction:0,
     xOffsetText:0,
     yOffsetText:0,
@@ -139,7 +139,7 @@ var yAxis = {
     getPublicMax:new Boolean(false),
     settings:function(obj){
         this.data = obj.data;
-        this.dataLength = obj.data.length;
+        this.ticks = obj.ticks;
         this.distanceY = obj.distanceY;
         this.direction = obj.direction;
         this.xOffsetText = obj.xOffsetText;
@@ -154,8 +154,8 @@ var yAxis = {
 
     /****************画y轴刻度线************/
     drawYGraduationLine:function(wStart,hStart,hEnd,className){
-        var interval = (hEnd-hStart-this.distanceY)/this.dataLength;//刻度间的间隔
-        for(let i = 0;i < this.dataLength+1; i++) {
+        var interval = (hEnd-hStart-this.distanceY)/this.ticks;//刻度间的间隔
+        for(let i = 0;i < this.ticks+1; i++) {
             dreamCharts.SVG.paper.line(wStart, hEnd - interval * i, wStart + this.direction,
                     hEnd - interval * i).addClass(className);
         }
@@ -164,7 +164,7 @@ var yAxis = {
 
     /****************画y轴文本************/
     drawYText:function(wStart,hStart,hEnd,className){
-        var interval = (hEnd-hStart-this.distanceY)/this.dataLength;//刻度间的间隔
+        var interval = (hEnd-hStart-this.distanceY)/this.ticks;//刻度间的间隔
         var dataMax = 0;
         if(this.getPublicMax == false){
             dataMax = Math.max.apply(Math,this.data);
@@ -174,8 +174,8 @@ var yAxis = {
         }
 
         /******************画刻度文本********************/
-        for(let i = 0;i < this.dataLength+1; i++){
-            dreamCharts.SVG.paper.text(wStart+this.xOffsetText,hEnd-(interval)*i+this.yOffsetText,(i*Math.ceil((dataMax/this.dataLength))).toString())
+        for(let i = 0;i < this.ticks+1; i++){
+            dreamCharts.SVG.paper.text(wStart+this.xOffsetText,hEnd-(interval)*i+this.yOffsetText,(i*Math.ceil((dataMax/this.ticks))).toString())
                 .addClass(className);
         }
         return dreamCharts.SVG.selectAll("."+className);
