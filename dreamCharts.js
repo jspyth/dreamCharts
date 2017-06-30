@@ -56,43 +56,43 @@ var dreamCharts = {
             }
         }
     },
-    removeEventListener:function(arr,event,func){
+    removeEventListener:function(arr,event){
         for(var i = 0,len = arr.length; i < len;i++){
             if(event == "unmousemove"){
-                arr[i].unmousemove(func);
+                arr[i].unmousemove();
             }
             else if(event == "unclick"){
-                arr[i].unclick(func);
+                arr[i].unclick();
             }
             else if(event == "undblclick"){
-                arr[i].undblclick(func);
+                arr[i].undblclick();
             }
             else if(event == "unmousedown"){
-                arr[i].unmousedown(func);
+                arr[i].unmousedown();
             }
             else if(event == "unmousemove"){
-                arr[i].unmousemove(func);
+                arr[i].unmousemove();
             }
             else if(event == "unmouseout"){
-                arr[i].unmouseout(func);
+                arr[i].unmouseout();
             }
             else if(event == "unmouseover"){
-                arr[i].unmouseover(func);
+                arr[i].unmouseover();
             }
             else if(event == "untouchstart"){
-                arr[i].untouchstart(func);
+                arr[i].untouchstart();
             }
             else if(event == "untouchmove"){
-                arr[i].untouchmove(func);
+                arr[i].untouchmove();
             }
             else if(event == "untouchend"){
-                arr[i].untouchend(func);
+                arr[i].untouchend();
             }
             else if(event == "unhover"){
-                arr[i].unhover(func);
+                arr[i].unhover();
             }
             else if(event == "undrag"){
-                arr[i].undrag(func);
+                arr[i].undrag();
             }
             else{
                 return 0;
@@ -180,6 +180,277 @@ var yAxis = {
         }
         return dreamCharts.SVG.selectAll("."+className);
     }//wStart,hStart,wEnd,heightEnd是直方图的起始宽高和终点宽高，Attr是给线段赋属性，distance是第一根刻度线距离y轴长垂线顶端的距离，dataLength是数据的个数，xOffsetText是决定文本沿水平方向左右移动，yOffsetText是决定文本沿垂直方向上下移动，dataMax是取出数据中最大的数据值
+};
+
+/*****************平行坐标系******************/
+var parallel = {
+    distanceY:0,
+    ticks:0,
+    direction:0,
+    xOffsetText:0,
+    yOffsetText:0,
+    data:[],
+    dataLength:0,
+    settings:function(obj){
+        this.data = obj.data;
+        this.ticks = obj.ticks;
+        this.distanceY = obj.distanceY;
+        this.direction = obj.direction;
+        this.xOffsetText = obj.xOffsetText;
+        this.yOffsetText = obj.yOffsetText;
+        this.dataLength = obj.data.length;
+        return dreamCharts.parallel;
+    },
+    drawParallelYAxis:function(wStart,hStart,hEnd,flag,title,className){
+        var point = [];
+        var that = this;
+        //竖直长线
+        var YLine = dreamCharts.SVG.paper.line(wStart,hStart,wStart,hEnd).addClass("YLine "+className+"Line"+`${flag}`);
+        //隐藏的矩形
+        var hiddenRect = dreamCharts.SVG.paper.rect(wStart+this.direction,hStart,Math.abs(2*this.direction),hEnd-hStart).addClass("hiddenRect").attr({
+            opacity:0
+        }).mousemove(function(){
+            var x = dreamCharts.toolOption.mousePosition().x;
+            var y = dreamCharts.toolOption.mousePosition().y;
+            var el = dreamCharts.SVG.select(".ten");
+            if(el){
+                el.remove();
+            }
+            else {
+                var rect1 = dreamCharts.SVG.paper.rect(x - Math.abs(that.direction), y - 2, Math.abs(2 * that.direction), 4).attr({
+                    stroke: "white",
+                    opacity: 0.8,
+                    borderOpacity: 1
+                });
+                var rect2 = dreamCharts.SVG.paper.rect(x - 2, y - Math.abs(that.direction), 4, Math.abs(2 * that.direction)).attr({
+                    stroke: "white",
+                    opacity: 0.8,
+                    borderOpacity: 1
+                });
+                var group = dreamCharts.SVG.paper.g(rect1, rect2);
+                group.addClass("ten");
+            }
+        }).mouseout(function(){
+            var el = dreamCharts.SVG.select(".ten");
+            if(el){
+                el.remove();
+            }
+        }).click(function(){
+            var ten = dreamCharts.SVG.select(".ten");
+            if(ten) {
+                ten.remove();
+            }
+            this.unmousemove();
+            var flag = dreamCharts.SVG.selectAll(".sta").length;
+            //console.log(that.flag%2);
+            if(flag == 0) {
+                dreamCharts.SVG.selectAll(".diagram").attr({
+                    opacity: 0.1
+                });
+            }
+            var diagram = dreamCharts.SVG.selectAll(".diagram");
+            if((flag%2) == 1) {
+                for (let i = 0; i < diagram.length; i++) {
+                    diagram[i].unmouseover();
+                }
+            }
+            else{
+                //需要在下面写多数轴共同筛选的功能
+                for (let i = 0; i < diagram.length; i++) {
+                    diagram[i].mouseover(function () {
+                        this.attr({
+                            opacity: 1
+                        });
+                    });
+                }
+            }
+            var y1 = dreamCharts.toolOption.mousePosition().y;
+            var el = dreamCharts.SVG.selectAll(".sta");
+            var len = el.length;
+            if(len == 0){
+                point.push(y1);
+                dreamCharts.SVG.paper.line(wStart-Math.abs(that.direction),y1,wStart+Math.abs(that.direction),y1).attr({
+                    stroke:"white"
+                }).addClass("sta "+"sta"+`${len+1}`);
+            }
+            else{
+                if(y1 > point[0]){
+                    dreamCharts.SVG.paper.rect(wStart-Math.abs(that.direction),point[0],Math.abs(that.direction*2),y1-point[0]).attr({stroke:"white",opacity:0.2}).addClass("rectShow").dblclick(function(){
+                        this.remove();
+                        var someLine = dreamCharts.SVG.selectAll(".sta");
+                        if(someLine) {
+                            let len = someLine.length;
+                            for(let i = 0;i < len;i++){
+                                someLine[i].remove();
+                            }
+                        }
+                        dreamCharts.SVG.selectAll(".diagram").attr({
+                            opacity: 1
+                        });
+                    });
+                }
+                if(y1 < point[0]){
+                    dreamCharts.SVG.paper.rect(wStart-Math.abs(that.direction),y1,Math.abs(that.direction*2),point[0]-y1).attr({stroke:"white",opacity:0.2}).addClass("rectShow").dblclick(function(){
+                        this.remove();
+                        var someLine = dreamCharts.SVG.selectAll(".sta");
+                        if(someLine) {
+                            let len = someLine.length;
+                            for(let i = 0;i < len;i++){
+                                someLine[i].remove();
+                            }
+                        }
+                        dreamCharts.SVG.selectAll(".diagram").attr({
+                            opacity: 1
+                        });
+                        if(dreamCharts.SVG.selectAll(".rectShow").length == 0){
+                            that.flag =0;
+                        }
+                    });
+                }
+                dreamCharts.SVG.paper.line(wStart-Math.abs(that.direction),y1,wStart+Math.abs(that.direction),y1).attr({
+                    stroke:"white"
+                }).addClass("sta "+"sta"+`${len+1}`);
+                point.push(y1);
+            }
+
+        });
+        //刻度线
+        var interval = (hEnd-hStart-this.distanceY)/this.ticks;//刻度间的间隔
+        for(let i = 0;i < this.ticks+1; i++) {
+            dreamCharts.SVG.paper.line(wStart, hEnd - interval * i, wStart + this.direction,
+                    hEnd - interval * i).addClass("YGraduationLine "+className+"GraduationLine"+`${flag}`);
+        }
+        var YGraduationLine = dreamCharts.SVG.selectAll("."+className+"GraduationLine"+`${flag}`);
+        //刻度文本
+        var dataMax = Math.max.apply(Math,this.data[flag-1]);
+        /******************画刻度文本********************/
+        for(let i = 0;i < this.ticks+1; i++){
+            dreamCharts.SVG.paper.text(wStart+this.xOffsetText,hEnd-(interval)*i+this.yOffsetText,(i*Math.ceil((dataMax/this.ticks))).toString())
+                .addClass("YText "+className+"Text"+`${flag}`);
+        }
+        var YText = dreamCharts.SVG.selectAll("."+className+"Text"+`${flag}`);
+        //标题
+        var titleLen = title.length;
+        dreamCharts.SVG.paper.text(wStart-titleLen*3.7,hStart-10,title).addClass("title"+" "+className+"Title"+`${flag}`);
+        var Title = dreamCharts.SVG.select("."+className+"Title"+`${flag}`);
+        var g = dreamCharts.SVG.paper.g(YLine,YGraduationLine,YText,Title,hiddenRect);
+        g.addClass(className+" "+className+`${flag}`);
+        return g;
+    },
+    drawParallelPoly:function(wStart,wEnd,hStart,hEnd,className){
+        var len = this.data.length,len2 = this.data[0].length;//len表示数据的字段数，len2表示每个字段数据的个数
+        var arr1 = [];//获取每个数据值
+        var dataMax = [];//获取每个字段数据最大值
+        for(let i = 0;i < len;i++){
+            for(let j = 0;j < len2;j++){
+                arr1.push(this.data[i][j]);
+            }
+        }
+        for(let i = 0;i < len;i++){
+            dataMax.push(Math.max.apply(Math,this.data[i]));
+        }
+
+        var interval = (wEnd-wStart)/this.dataLength;//x轴刻度间的间隔
+        var d = "";
+        var x = 0;
+        var y = 0;
+        var a = (hEnd-hStart-dreamCharts.yAxis.distanceY)/this.dataLength;//y轴每段刻度之间的y坐标间隔
+        var arr2 = [];//每次获取一个字段数据
+        var arr3 = [];//一个字段一个字段地存所有数据
+        var firstIndex = 0;
+        for(let i = 0;i < len2;i++){
+            for(let g =0;g < len;g++){
+                if(arr2.length == 0){
+                    arr2.push(arr1[i]);
+                    firstIndex = i;
+                }
+                else{
+                    arr2.push(arr1[firstIndex+g*len2]);
+                }
+            }
+            for(let xx = 0;xx < arr2.length;xx++){
+                arr3.push(arr2[xx]);
+            }
+            arr2.splice(0,arr2.length);
+        }
+        for(let j = 0;j < len2;j++) {
+            for (let i = 0; i < this.data.length; i++) {
+                x = wStart + i * interval;
+                y = hEnd - Math.floor(arr3.slice(0,len)[i] / Math.ceil(dataMax[i] / this.dataLength)) * a - (arr3.slice(0,len)[i] % Math.ceil(dataMax[i] / this.dataLength)) / Math.ceil(dataMax[i] / this.dataLength) * a;
+                if (i == 0) {
+                    d = "M" + x + " " + y;
+                }
+                else {
+                    d = d + "L" + x + " " + y + " ";
+                }
+            }
+            arr3.splice(0,len);
+            dreamCharts.SVG.paper.path(d)
+                .addClass(className);
+            d = "";
+        }
+        return dreamCharts.SVG.selectAll("."+className);
+    },
+    drawParallelDiagram:function(wStart,wEnd,hStart,hEnd,className){
+        var that = this;
+        var len = this.data.length,len2 = this.data[0].length;
+        var arr1 = [];
+        var dataMax = [];
+        for(let i = 0;i < len;i++){
+            for(let j = 0;j < len2;j++){
+                arr1.push(this.data[i][j]);
+            }
+        }
+        for(let i = 0;i < len;i++){
+            dataMax.push(Math.max.apply(Math,this.data[i]));
+        }
+        var interval = (wEnd-wStart)/this.dataLength;//x轴刻度间的间隔
+        var arr2 = [];
+        var arr3 = [];
+        var firstIndex = 0;
+        for(let i = 0;i < len2;i++){
+            for(let g =0;g < len;g++){
+                if(arr2.length == 0){
+                    arr2.push(arr1[i]);
+                    firstIndex = i;
+                }
+                else{
+                    arr2.push(arr1[firstIndex+g*len2]);
+                }
+            }
+            for(let xx = 0;xx < arr2.length;xx++){
+                arr3.push(arr2[xx]);
+            }
+            arr2.splice(0,arr2.length);
+        }
+        var point = [];
+        var d = "";
+        var x = 0;
+        var y = 0;
+        var a = (hEnd-hStart-dreamCharts.yAxis.distanceY)/this.dataLength;//y轴每段刻度之间的y坐标间隔
+        for(let j = 0;j < len2;j++) {
+            for (let i = 0; i < len; i++) {
+                x = wStart + i * interval;
+                y = hEnd - Math.floor(arr3.slice(0,len)[i] / Math.ceil(dataMax[i] / this.dataLength)) * a - (arr3.slice(0,len)[i] % Math.ceil(dataMax[i] / this.dataLength)) / Math.ceil(dataMax[i] / this.dataLength) * a;
+                if (i === 0) {
+                    d = "M"+x+" "+y+" C";
+                    point.push(x,y);
+                    x = 0;
+                }
+                else {
+                    d = d+(point[0]+0.5*interval)+" "+point[1]+" "+(point[0]+0.5*interval)+" "+y+" "+x+" "+y+" ";
+                    point.splice(0,point.length);
+                    point.push(x,y);
+                }
+            }
+            arr3.splice(0,len);
+            dreamCharts.SVG.paper.path(d)
+                .addClass("diagram "+className+`${j+1}`);
+            d = "";
+            point.splice(0,point.length);
+        }
+        return dreamCharts.SVG.selectAll(".diagram");
+    }
 };
 
 /****************x轴****************/
@@ -392,9 +663,25 @@ var polyLine = {
             .addClass(className);
     }
 };
+
+var toolOption = {
+    //获取鼠标真实位置
+    mousePosition:function(ev){
+        if (!ev) ev = window.event;
+        if (ev.pageX || ev.pageY) {
+            return { x: ev.pageX, y: ev.pageY };
+        }
+        return {
+            x: ev.clientX + document.documentElement.scrollLeft - document.body.clientLeft,
+            y: ev.clientY + document.documentElement.scrollTop - document.body.clientTop
+        };
+    }
+};
 dreamCharts.yAxis = yAxis;
 dreamCharts.xAxis = xAixs;
 dreamCharts.histogram = histogram;
 dreamCharts.stack = stack;
 dreamCharts.polyLine = polyLine;
 dreamCharts.legend = legend;
+dreamCharts.parallel = parallel;
+dreamCharts.toolOption = toolOption;
