@@ -12,7 +12,7 @@ var data = [176,58,112,61,38,50,200,139,66,100,333,234];
 var data2 = [76,158,34,88,123,344,45,912,90,100,112,200];
 var catogary = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
 
-dreamCharts.calPublicMax([data,data2]);//如果多列数据就使用这个方法
+dreamCharts.calPublicMaxY([data,data2]);//如果多列数据就使用这个方法
 
 var yAxis = dreamCharts.yAxis
     .settings(
@@ -23,7 +23,7 @@ var yAxis = dreamCharts.yAxis
         direction:-15,
         xOffsetText:-45,
         yOffsetText:7,
-        getPublicMax:true
+        getPublicMaxY:true
     }
 );
 
@@ -53,7 +53,8 @@ var xAxis = dreamCharts.xAxis
         xOffsetText:-15,
         yOffsetText:30,
         direction:15,
-        allOffset:1
+        allOffset:1,
+        showCatogary:true
 });
 //x轴水平长线
 xAxis.drawXLine(wStart,wEnd-80,hEnd)
@@ -95,7 +96,7 @@ histogram1.drawBar(wStart,wEnd,hStart,hEnd,"bar1")
 var polyline1 = dreamCharts.polyLine.settings({
     data:data,
     allOffset:1,
-    getPublicMax:true
+    getPublicMaxY:true
 });
 
 polyline1.drawPolyLine(wStart,wEnd,hStart,hEnd,"line1")
@@ -108,7 +109,7 @@ polyline1.drawPolyLine(wStart,wEnd,hStart,hEnd,"line1")
 var polyline2 = dreamCharts.polyLine.settings({
     data:data2,
     allOffset:1,
-    getPublicMax:true
+    getPublicMaxY:true
 });
 
 polyline2.drawPolyLine(wStart,wEnd,hStart,hEnd,"line2")
@@ -117,30 +118,26 @@ polyline2.drawPolyLine(wStart,wEnd,hStart,hEnd,"line2")
         stroke:"yellow",
         fill:"none"
     });
-var lengend1 = dreamCharts.legend.settings({
+var lengend = dreamCharts.legend.settings({
     width:55,
     height:25
 });
-lengend1.drawLegendRect(wStart,hStart-50)
+lengend.drawLegendRect(wStart,hStart-50)
 .attr({
         fill:"blue"
     });
 
-lengend1.drawLegendText(wStart+70,hStart-29,"第一年")
+lengend.drawLegendText(wStart+70,hStart-29,"第一年")
     .attr({
     fill:"rgb(233,98,9)",
     strokeWidth:"1px"
 });
 
-var lengend2 = dreamCharts.legend.settings({
-    width:55,
-    height:25
-});
-lengend2.drawLegendRect(wStart+130,hStart-50)
+lengend.drawLegendRect(wStart+130,hStart-50)
     .attr({
         fill:"yellow"
     });
-lengend2.drawLegendText(wStart+190,hStart-29,"第二年")
+lengend.drawLegendText(wStart+190,hStart-29,"第二年")
     .attr({
         fill:"rgb(233,98,9)",
         strokeWidth:"1px"

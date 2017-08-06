@@ -11,7 +11,7 @@ for(let j = 0;j < List[0].length;j++){
     maxList.push(List[0][j]+List[1][j]+List[2][j]);
 }
 
-dreamCharts.calPublicMax([maxList]);//如果多列数据就使用这个方法
+dreamCharts.calPublicMaxY([maxList]);//如果多列数据就使用这个方法
 
 var yAxis = dreamCharts.yAxis
     .settings(
@@ -22,7 +22,7 @@ var yAxis = dreamCharts.yAxis
         direction:wEnd-wStart,
         xOffsetText:-65,
         yOffsetText:7,
-        getPublicMax:true
+        getPublicMaxY:true
     }
 );
 
@@ -53,7 +53,8 @@ var xAxis = dreamCharts.xAxis
         xOffsetText:-15,
         yOffsetText:30,
         direction:15,
-        allOffset:1
+        allOffset:1,
+        showCatogary:true
     });
 //x轴水平长线
 xAxis.drawXLine(wStart,wEnd-80,hEnd)
@@ -80,7 +81,7 @@ xAxis.drawXText(wStart,hEnd,wEnd,"xText")
 var stack = dreamCharts.stack.settings({
     data:List,
     multiple:0.7,
-    getPublicMax:true//堆叠图情况特殊，这里是false还是true结果都相同
+    getPublicMaxY:true//堆叠图情况特殊，这里是false还是true结果都相同
 });
 
 stack.drawStack(wStart,wEnd,hStart,hEnd,"stack");
